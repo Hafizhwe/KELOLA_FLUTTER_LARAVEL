@@ -1,0 +1,33 @@
+<?php
+
+use App\Http\Controllers\API\Auth\AuthAPIController;
+use App\Http\Controllers\API\TransactionAPIController;
+use App\Http\Controllers\API\DataAPIController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/user', function (Request $request) {
+    return $request->user();
+})->middleware('auth:sanctum');
+
+Route::get('/test', function() {
+    return response([
+        'message' => 'Api is Working'
+    ], 200);
+});
+
+Route::post('register', [AuthAPIController::class, 'register']);
+Route::post('login', [AuthAPIController::class, 'login']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    // Endpoint untuk menyimpan transaksi baru
+    Route::post('/transactions', [TransactionAPIController::class, 'store']);
+
+    // Endpoint untuk mendapatkan semua transaksi pengguna
+    Route::get('/transactions', [TransactionAPIController::class, 'index']);
+});
+    // Route untuk menampilkan semua data
+    Route::get('/data', [DataAPIController::class, 'index']);
+
+    // Route untuk menyimpan data baru
+    Route::post('/data', [DataAPIController::class, 'store']);
